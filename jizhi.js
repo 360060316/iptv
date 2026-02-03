@@ -24,6 +24,9 @@ function main(item) {
         case '广东联通':
             res = fetch('https://raw.githubusercontent.com/360060316/iptv/refs/heads/main/%E5%B9%BF%E4%B8%9C%E8%81%94%E9%80%9A.json');
             break;
+        case '湖南移动':
+            res = fetch('https://raw.githubusercontent.com/360060316/iptv/refs/heads/main/%E6%B9%96%E5%8D%97%E7%A7%BB%E5%8A%A8.json');
+            break;
         default:
             return {
                 error: '暂未适配该地区节目源，请等后续更新！'
