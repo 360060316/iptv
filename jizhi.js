@@ -9,7 +9,7 @@ function main(item) {
         return null;
     }
     const field = getNetwork();
-    if (!field) {
+    if (!field.region || !field.network) {
         return {
             error: '未知网络区域，无法匹配节目源！'
         };
@@ -22,7 +22,7 @@ function main(item) {
             res = fetch('https://raw.githubusercontent.com/360060316/iptv/refs/heads/main/%E6%B9%96%E5%8C%97%E7%A7%BB%E5%8A%A8.json');
             break;
         case '广东联通':
-            res = fetch('https://raw.githubusercontent.com/360060316/iptv/refs/heads/main/%E6%B9%96%E5%8C%97%E7%A7%BB%E5%8A%A8.json');
+            res = fetch('https://raw.githubusercontent.com/360060316/iptv/refs/heads/main/%E5%B9%BF%E4%B8%9C%E8%81%94%E9%80%9A.json');
             break;
         default:
             return {
@@ -38,22 +38,33 @@ function main(item) {
 
     const channels = [];
     for (const channel of res.body) {
-        channels.push({
-            name: channel.name,
-            seasons: [
-                {
-                    episodes: [
-                        {
-                            links: [
-                                {
-                                    url: channel.url
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        });
+        const index = channels.findIndex((obj, idx) => obj.name === channel.name);
+        if (index != -1) {
+            channels[index].seasons[0].episodes[0].links.push({ url: channel.url });
+        } else {
+            const field = {
+                name: channel.name,
+                seasons: [
+                    {
+                        episodes: [
+                            {
+                                links: [
+                                    {
+                                        url: channel.url
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            if (channel.logo) {
+                field.logo = channel.logo;
+            }
+
+            channels.push(field);
+        }
     }
 
     if (channels.length == 0) {
